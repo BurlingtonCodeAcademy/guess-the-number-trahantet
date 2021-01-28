@@ -38,7 +38,7 @@ async function start() {
     }
 
     // generate new guess
-    num = randomInt(min,max)
+    num = smartGuess(min,max)
     
     // ask if its the number
     guess = await ask('\n\n\nIs ' + num + " your number?");
@@ -61,13 +61,15 @@ function randomInt(min, max) {
 
   return randInt
 }
+ 
+// ToDo - 'D' = done
+// D) instead of random number smart guess = mid.. make guess (max - min)/2.rounded the guess.
 
+function smartGuess(min, max){
+  return Math.floor((max + min )/2)
+}
 
+// 2) maybe switch the wording of is it higher or lower, and thus the min and max direction.
+// 3) allow for user input in the range
+// 4) include a cheat detector
 
-/* 
-ToDo
-1) instead of random number smart guess = mid.. make guess (max - min)/2.rounded the guess.
-2) maybe switch the wording of is it higher or lower, and thus the min and max direction.
-3) allow for user input in the range
-4) include a cheat detector
-*/
