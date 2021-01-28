@@ -9,7 +9,7 @@ function ask(questionText) {
 
 start();
 
-// change or delete any of the code below
+
 let min = 0 
 let max = 100
 tries = 0
@@ -43,6 +43,7 @@ async function start() {
     // ask if its the number
     guess = await ask('\n\n\nIs ' + num + " your number?");
 
+    // update how many tries 
     tries ++ 
   } 
 
@@ -52,7 +53,7 @@ async function start() {
   process.exit();
 }
 
-// need to turn this into a loop....
+// random number generator. want to turn this into smart guess 
 
 function randomInt(min, max) {
   let range = max - min + 1
@@ -64,29 +65,9 @@ function randomInt(min, max) {
 
 
 /* 
-D- ask user what they entered..
-D- instructions
-D- generate random num between min and max.  we can do this using random number generator.  
-D- present to user 
-D- ask if correct.. wait for input
-D- user inputs Y or N
-D- if Y "I got it right"
-D- if N ask new question: "Higher or lower", wait for answer
-D- user inputs H or L
-D- if H make num new min  
-D- if L make num new max 
-
 ToDo
 1) instead of random number smart guess = mid.. make guess (max - min)/2.rounded the guess.
 2) maybe switch the wording of is it higher or lower, and thus the min and max direction.
 3) allow for user input in the range
 4) include a cheat detector
 */
-
-
-/* if guess = Y print Congrats
-  if (guess.toLowerCase() === 'y') {
-    console.log("YAH! I guessed it right!!!") // later i can put in a safety check to see if guess and secretNumber match.
-  } else {
-    // if guess = N resent range
-    */
