@@ -16,6 +16,12 @@ tries = 0
 
 async function start() {
   console.log("Let's play a game where you (human) make up a number and I (computer) try to guess it.")
+  
+  // user sets range
+  let userRangeMax = await ask("First lets determine how difficult the game will be by setting the range.\nTell me the HIGHEST number you want me to guess from....");
+  let userRangeMin = await ask("Great! Now tell me the lowest number you want me to guess from ....");
+  
+  // user picks number
   let secretNumber = await ask("What is your secret number?\nI won't peek, I promise...\n");
   console.log('You entered: ' + secretNumber);
 
@@ -68,8 +74,9 @@ function randomInt(min, max) {
 function smartGuess(min, max){
   return Math.floor((max + min )/2)
 }
-
 // 2) maybe switch the wording of is it higher or lower, and thus the min and max direction.
 // 3) allow for user input in the range
+// 3.1) if user inputs nothing use default.
 // 4) include a cheat detector
+// 5) update while loop with stdin.on 
 
