@@ -29,7 +29,6 @@ async function start() {
   );
 
   // conditional.. if user presses enter, set max and min default
-  // make ternary so that its a little cleaners
   userRangeMin && typeof(userRangeMax) === 'number' ? max = +userRangeMax: max = 100;
 
   userRangeMin && typeof(userRangeMin) === 'number' ? min = +userRangeMin:min = 0;
