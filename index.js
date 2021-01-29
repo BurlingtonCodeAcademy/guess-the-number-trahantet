@@ -12,34 +12,27 @@ start();
 //  global variables
 let min;
 let max;
-tries = 0;
+tries = 1;
 
 async function start() {
+  // GAME BEGINS
   console.log(
     "Let's play a game where you (human) make up a number and I (computer) try to guess it."
   );
 
   // user sets range
   let userRangeMax = await ask(
-    "First lets determine how difficult the game will be by setting the range.\nTell me the HIGHEST number you want me to guess from.... or press ENTER to use the default.\n"
+    "\nFirst lets determine how difficult the game will be by setting the range.\nTell me the HIGHEST number you want me to guess from.... or press ENTER to use the default.\n"
   );
   let userRangeMin = await ask(
-    "Great! Now tell me the lowest number you want me to guess from .... or, again, press ENTER to use the default.\n"
+    "\nGreat! Now tell me the lowest number you want me to guess from .... or, again, press ENTER to use the default.\n"
   );
 
   // conditional.. if user presses enter, set max and min default
   // make ternary so that its a little cleaners
-  if (userRangeMax) {
-    max = +userRangeMax;
-  } else {
-    max = 100;
-  }
+  userRangeMin && typeof(userRangeMax) === 'number' ? max = +userRangeMax: max = 100;
 
-  if (userRangeMin) {
-    min = +userRangeMin;
-  } else {
-    min = 0;
-  }
+  userRangeMin && typeof(userRangeMin) === 'number' ? min = +userRangeMin:min = 0;
 
   // user picks number
   let secretNumber = await ask(
@@ -57,26 +50,40 @@ async function start() {
   } else {
     console.log("You entered: " + secretNumber);
   }
+  //  set max numbers of tries
+  let maxTries = Math.round(Math.log2(max - min) + 1);
 
   // Instructions
   console.log(
     "Great! Now, I'm going to guess your number.  After I show you my guess tell me if I'm right or wrong.\nType 'Y' for right and 'N' for wrong, then hit enter!\nThen I will ask if your number is higher or lower.  Type 'H' for higher and 'L' for lower, then hit enter.\nLets play!!"
   );
 
+  // START GUESSING
+
   // Generate random number and present to user
   let num = smartGuess(min, max);
 
   let guess = await ask("\n\n\nIs " + num + " your number?");
 
-  // run for as long as user is inputting y and n
-  while (guess) {
+  // run for as long as user is inputting y and n or input doesnt = end
+  while (guess.toLowerCase() !== "end") {
+    
+    // dont let people type anything other than y, n or end
+    while (guess.toLowerCase() !== "y" && guess.toLowerCase() !== "n") {
+      guess = await ask(
+        "Please use the key 'Y' for 'yes', 'N' for 'no', or 'end' to end the game now.\n\nIs " +
+          num +
+          " your number?"
+      );
+    }
+    // if user says number is wrong
     while (guess.toLowerCase() === "n") {
       // ask if higher or lower
       let guessDirection = await ask(
         "Is " + num + " higher or lower than your number?"
       );
 
-      // reset randomInt ranges
+      // reset ranges via max and min
       if (guessDirection.toLowerCase() === "h") {
         max = num - 1;
       } else {
@@ -91,8 +98,17 @@ async function start() {
 
       // update how many tries
       tries++;
+      // if tries is over maxtries number exit
+      if (tries > maxTries) {
+        console.log(
+          "Sorry, I can't guess your number.  you must be cheating.\nGOODBYE"
+        );
+        process.exit();
+      }
     }
-
+    
+    // if user says number is right:
+    // and the guess doesnt match their secret number accuse them of cheating
     while (guess.toLowerCase() === "y" && +num !== +secretNumber) {
       guess = await ask(
         "Are you sure " +
@@ -100,13 +116,26 @@ async function start() {
           " is your number?  It doesn't match what you told me earlier."
       );
       tries++;
+      if (tries > maxTries) {
+        console.log(
+          "Sorry, I can't guess your number.  you must be cheating.\nGOODBYE"
+        );
+        process.exit();
+      }
     }
-    console.log(
-      "Yah, I guessed it right!\nI guessed it in " + tries + " tries."
-    );
-    break;
+    
+    // if user says number is right:
+    // and the guess does match their secret number celebrate and tell them how long it took
+    if (guess.toLowerCase() === "y" && +num === +secretNumber) {
+      console.log(
+        "Yah, I guessed it right!\nI guessed it in " + tries + " tries."
+      );
+      break;
+    }
+  
   }
-
+  // if user types 'end
+  console.log('Thank for playing!\nGoodbye!')
   process.exit();
 }
 
@@ -127,5 +156,7 @@ function smartGuess(amin, bmax) {
 // 2) maybe switch the wording of is it higher or lower, and thus the min and max direction.
 // D) allow for user input in the range
 // D) if user inputs nothing use default.
-// 4) include a cheat detector
+// D) include a cheat detector
+// 4.5) add option to say end in HorL and correct if anything except Hor L are typed
 // 5) role reversal
+// 6) wanna play again?
