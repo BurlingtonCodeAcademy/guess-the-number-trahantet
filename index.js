@@ -10,8 +10,8 @@ function ask(questionText) {
 
 start();
 //  global variables
-let min
-let max
+let min;
+let max;
 tries = 0;
 
 async function start() {
@@ -29,29 +29,35 @@ async function start() {
 
   // conditional.. if user presses enter, set max and min default
   // make ternary so that its a little cleaners
-  if (userRangeMax){
-    max = parseInt(userRangeMax)
+  if (userRangeMax) {
+    max = +userRangeMax;
   } else {
-    max = 100
-  };
+    max = 100;
+  }
 
-  if(userRangeMin){
-    min = parseInt(userRangeMin)
+  if (userRangeMin) {
+    min = +userRangeMin;
   } else {
-    min = 0
-  };
+    min = 0;
+  }
 
   // user picks number
   let secretNumber = await ask(
     "What is your secret number?\nI won't peek, I promise...\n"
   );
   if (secretNumber < 0 || secretNumber > max) {
-    secretNumber = await ask("Hey! Let's play fair!\nPick a number between " + min + " and " + max + " .");
+    secretNumber = await ask(
+      "Hey! Let's play fair!\nPick a number between " +
+        min +
+        " and " +
+        max +
+        " ."
+    );
     console.log("Thats better! You entered: " + secretNumber);
   } else {
     console.log("You entered: " + secretNumber);
-  };
-  
+  }
+
   // Instructions
   console.log(
     "Great! Now, I'm going to guess your number.  After I show you my guess tell me if I'm right or wrong.\nType 'Y' for right and 'N' for wrong, then hit enter!\nThen I will ask if your number is higher or lower.  Type 'H' for higher and 'L' for lower, then hit enter.\nLets play!!"
@@ -62,31 +68,44 @@ async function start() {
 
   let guess = await ask("\n\n\nIs " + num + " your number?");
 
-  while (guess.toLowerCase() === "n") {
-    // ask if higher or lower
-    let guessDirection = await ask(
-      "Is " + num + " higher or lower than your number?"
-    );
+  // run for as long as user is inputting y and n
+  while (guess) {
+    while (guess.toLowerCase() === "n") {
+      // ask if higher or lower
+      let guessDirection = await ask(
+        "Is " + num + " higher or lower than your number?"
+      );
 
-    // reset randomInt ranges
-    if (guessDirection.toLowerCase() === "h") {
-      max = num - 1;
-    } else {
-      min = num + 1;
+      // reset randomInt ranges
+      if (guessDirection.toLowerCase() === "h") {
+        max = num - 1;
+      } else {
+        min = num + 1;
+      }
+
+      // generate new guess
+      num = smartGuess(min, max);
+
+      // ask if its the number
+      guess = await ask("\n\n\nIs " + num + " your number?");
+
+      // update how many tries
+      tries++;
     }
 
-    // generate new guess
-    num = smartGuess(min, max);
-
-    // ask if its the number
-    guess = await ask("\n\n\nIs " + num + " your number?");
-
-    // update how many tries
-    tries++;
+    while (guess.toLowerCase() === "y" && +num !== +secretNumber) {
+      guess = await ask(
+        "Are you sure " +
+          num +
+          " is your number?  It doesn't match what you told me earlier."
+      );
+      tries++;
+    }
+    console.log(
+      "Yah, I guessed it right!\nI guessed it in " + tries + " tries."
+    );
+    break;
   }
-
-  //
-  console.log("Yah, I guessed it right!\nI guessed it in " + tries + " tries.");
 
   process.exit();
 }
@@ -102,8 +121,8 @@ function randomInt(min, max) {
 
 // ToDo - 'D' = done
 // D) instead of random number smart guess = mid.. make guess (max - min)/2.rounded the guess.
-function smartGuess(min, max) {
-  return Math.floor((max + min) / 2);
+function smartGuess(amin, bmax) {
+  return Math.floor((bmax + amin) / 2);
 }
 // 2) maybe switch the wording of is it higher or lower, and thus the min and max direction.
 // D) allow for user input in the range
