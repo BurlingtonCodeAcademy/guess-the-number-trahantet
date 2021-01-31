@@ -29,6 +29,8 @@ async function start() {
   );
 
   // conditional.. if user presses enter, set max and min default
+  //  TODO! if user says something other than numbers then say... i didnt quite get that or .. say, im not sure those were numbers.. i've automatically set your range to 100.... 
+  
   userRangeMin && typeof(userRangeMax) === 'number' ? max = +userRangeMax: max = 100;
 
   userRangeMin && typeof(userRangeMin) === 'number' ? min = +userRangeMin:min = 0;
@@ -37,7 +39,7 @@ async function start() {
   let secretNumber = await ask(
     "What is your secret number?\nI won't peek, I promise...\n"
   );
-  if (secretNumber < 0 || secretNumber > max) {
+  while (secretNumber < min || secretNumber > max || secretNumber === '') {
     secretNumber = await ask(
       "Hey! Let's play fair!\nPick a number between " +
         min +
@@ -46,15 +48,15 @@ async function start() {
         " ."
     );
     console.log("Thats better! You entered: " + secretNumber);
-  } else {
-    console.log("You entered: " + secretNumber);
-  }
+  } 
+  console.log("\nYou entered: " + secretNumber);
+  
   //  set max numbers of tries
   let maxTries = Math.round(Math.log2(max - min) + 1);
 
   // Instructions
   console.log(
-    "Great! Now, I'm going to guess your number.  After I show you my guess tell me if I'm right or wrong.\nType 'Y' for right and 'N' for wrong, then hit enter!\nThen I will ask if your number is higher or lower.  Type 'H' for higher and 'L' for lower, then hit enter.\nLets play!!"
+    "\n\nGreat! Now, I'm going to guess your number.  After I show you my guess tell me if I'm right or wrong.\nType 'Y' for right and 'N' for wrong, then hit enter!\nThen I will ask if your number is higher or lower.  Type 'H' for higher and 'L' for lower, then hit enter.\nLets play!!"
   );
 
   // START GUESSING
@@ -91,6 +93,11 @@ async function start() {
 
       // generate new guess
       num = smartGuess(min, max);
+      
+      if (num < min){ 
+        console.log("Sorry, It seems you must be cheating.\nGOODBYE")
+         process.exit();
+      }
 
       // ask if its the number
       guess = await ask("\n\n\nIs " + num + " your number?");
@@ -157,5 +164,6 @@ function smartGuess(amin, bmax) {
 // D) if user inputs nothing use default.
 // D) include a cheat detector
 // 4.5) add option to say end in HorL and correct if anything except Hor L are typed
-// 5) role reversal
+// 5) role reversal - in separate file
 // 6) wanna play again?
+// 7) combine games
