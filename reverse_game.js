@@ -30,7 +30,7 @@ async function start() {
       userGuess = await ask(
         "Nope! " +
           userGuess +
-          " is too higher, guess again! This time a little lower."
+          " is too high, guess again! This time a little lower."
       );
     }
     if (compNumber > +userGuess) {

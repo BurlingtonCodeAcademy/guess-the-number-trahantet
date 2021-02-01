@@ -180,11 +180,49 @@ async function start() {
       console.log("Thank for playing!\nGoodbye!");
       process.exit();
     }
+    // PLAY AGAIN
+    // ask if you wanna play again or play reverse game..only gets asked once at this point
+    let gameContinueAsk = await ask(
+      "Now is your time to decide!  \nWanna play again or play something new?  type 'y' for yes to play this again, 'n' for no to exit, or 'new' to play a new game"
+    );
 
-    let gameContinueAsk = await ask("Wanna play again? yes ('y') or no ('n')?");
     gameContinue = gameContinueAsk.toLowerCase();
-  }
+    if (gameContinueAsk === "new") {
+      console.log(
+        "Thanks for playing another game with me. \nThis is a game where you (human) try to guess my (computer) secret number.  \nI  will tell if your guess is too high or too low, then you can guess again.  \nOK? Ready? \n\n Lets go!!\n\n"
+      );
+      // 1) generate random number between 1-100
+      let compNumber = randomInt(1, 100);
 
+      // 2) ask user for their guess
+      let userGuess = await ask("What is your guess?");
+      userGuess = +userGuess;
+      // 3) is guess same as random number?
+      while (userGuess !== compNumber) {
+        // 4) print if higher of lower + ask again
+        if (compNumber < +userGuess) {
+          userGuess = await ask(
+            "Nope! " +
+              userGuess +
+              " is too high, guess again! This time a little lower."
+          );
+        }
+        if (compNumber > +userGuess) {
+          userGuess = await ask(
+            "Nope! " +
+              userGuess +
+              " is too low, guess again! This time a little higher."
+          );
+        }
+        userGuess = +userGuess;
+      }
+      // 5) celebrate
+      console.log(
+        "Congratulations! You guessed right! My number was " + compNumber
+      );
+      process.exit();
+    }
+  }
   console.log("Thank for playing!\nGoodbye!");
   process.exit();
 }
@@ -209,6 +247,7 @@ function smartGuess(amin, bmax) {
 // D) include a cheat detector
 // D) add option to say end in HorL
 // D) correct if anything except Hor L are typed
-// 5) role reversal - in separate file
+// D) role reversal - in separate file
 // D) wanna play again?
-// 7) combine games
+// D) combine games
+// 10) allow for start over on whole thing....
