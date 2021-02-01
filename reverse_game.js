@@ -12,7 +12,11 @@ function ask(questionText) {
 start();
 
 async function start() {
-  // TO DO
+  // INTRO + INSTRUCTIONS
+
+  console.log(
+    "Let's play a game where you (human) try to guess my (computer) secret number.  \nI  will tell if your guess is too high or too low, then you can guess again.  \nOK? Ready? \n\n Lets go!!\n\n"
+  );
   // 1) generate random number between 1-100
   let compNumber = randomInt(1, 100);
 
@@ -28,16 +32,17 @@ async function start() {
           userGuess +
           " is too higher, guess again! This time a little lower."
       );
-    } 
-    if (compNumber > +userGuess){
-    userGuess = await ask(
-      "Nope! " +
-        userGuess +
-        " is too low, guess again! This time a little higher."
-    );
+    }
+    if (compNumber > +userGuess) {
+      userGuess = await ask(
+        "Nope! " +
+          userGuess +
+          " is too low, guess again! This time a little higher."
+      );
+    }
+    userGuess = +userGuess;
   }
-  userGuess = +userGuess;
-}
+  // 5) celebrate
   console.log(
     "Congratulations! You guessed right! My number was " + compNumber
   );
